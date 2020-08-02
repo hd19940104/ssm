@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zixue.shop.manager.dao.GoodsCategoryDao">
+	<!-- 分页查询 -->
+	<select id="queryPageData" resultType="com.zixue.shop.bean.GoodsCategory">
+		select
+		*
+		from t_goods_category
+		<where>
+			<if test="queryText!=null or queryText!='' ">
+				name like '%${queryText}%'
+			</if>
+		</where>
+		order by updateTime desc
+		limit #{start},#{size}
+
+	</select>
+	<!-- 总条数 -->
+	<select id="queryPageCount" resultType="int">
+
+		select count(*) from t_goods_category
+		<where>
+		1=1
+			<if test="queryText!=null or queryText!='' ">
+			 and	name like '%${queryText}%'
+			</if>
+		</where>
+	</select>
+	<!--添加商品信息 -->
+	<insert id="insertGood">
+		insert into t_goods_category
+		(name,remark,orderid,createTime,updateTime) values
+		(#{name},#{remark},#{orderid},#{createTime},#{updateTime})
+	</insert>
+
+	<!-- 根据id查询商品信息 -->
+	<select id="queryById" resultType="com.zixue.shop.bean.GoodsCategory">
+		select * from t_goods_category
+		where id=#{id}
+	</select>
+
+	<!-- 修改商品信息 -->
+	<update id="updateGood">
+		update t_goods_category
+		<trim prefix="set" prefixOverrides=","> 
+			<if test="name!=null and name!=''">
+				,name=#{name}
+			</if>
+			<if test="remark!=null and remark!=''">
+			 ,remark=#{remark}
+			</if>
+			<if test="orderid!=null and orderid!=''">
+				 ,orderid=#{orderid}
+			</if>
+			<if test="updateTime!=null and updateTime!=''">
+				,updateTime = #{updateTime}
+			</if>
+		</trim>
+		
+		where id=#{id}
+	</update>
+	<!-- 根据id删除商品 -->
+	<delete id="deleteGoodById">
+		delete from t_goods_category where id = #{id}
+
+	</delete>
+	<!--删除多条 -->
+
+	<delete id="deleteGoodsById">
+		delete from t_goods_category where id in
+		<foreach collection="gcs" item="gc" open="(" separator=","
+			close=")">
+			#{gc.id}
+		</foreach>
+
+	</delete>
+	
+	<!-- queryAll 查询所有 -->
+	<select id="queryAll" resultType="com.zixue.shop.bean.GoodsCategory">
+	
+		select * from t_goods_category order by orderid asc
+	</select>
+</mapper>

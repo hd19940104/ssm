@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zixue.shop.manager.dao.MemberManagerDao">
+	<!-- 分页查询 -->
+	<select id="queryPageData" resultType="com.zixue.shop.bean.Member">
+		select
+		M.id ,M.loginacct,M.nickname 
+		,(case  M.loginstatus when '0' then '离线'   ELSE '在线' end )as loginstatus
+		,( case  M.authstatus when '0' then '未认证'   ELSE '通过' end )as authstatus
+		, (case  M.sellerstatus when '0' then '未认证'   ELSE '通过' end)as sellerstatus
+		 ,( case  M.lockstatus when '0' then '正常'   ELSE '锁定' end )as lockstatus
+		 , M.loginnum
+		 ,M.regtime ,M.lastvisittime
+
+
+		from t_member M
+		<where>
+			<if test="queryText!=null or queryText!='' ">
+				M.loginacct like '%${queryText}%'
+			</if>
+		</where>
+		order by M.lastvisittime desc
+		limit #{start},#{size}
+
+	</select>
+	<!-- 总条数 -->
+	<select id="queryPageCount" resultType="int">
+
+		select count(*) from t_member
+		<where>
+			1=1
+			<if test="queryText!=null or queryText!='' ">
+				and loginacct like '%${queryText}%'
+			</if>
+		</where>
+	</select>
+
+</mapper>

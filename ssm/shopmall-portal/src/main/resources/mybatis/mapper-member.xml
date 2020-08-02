@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zixue.shop.protal.dao.MemberDao">
+	<!-- 登录查询 -->
+	<select id="queryLoginMemberByLoginacct" resultType="com.zixue.shop.bean.Member">
+		select * from t_member
+		where loginacct=#{loginacct} 
+
+	</select>
+<!-- queryLoginMemberByEmail -->
+	<select id="queryLoginMemberByEmail" resultType="com.zixue.shop.bean.Member">
+		select * from t_member
+		where email=#{email} 
+
+	</select>
+	<!--查询  queryLoginMember-->
+	<select id="queryLoginMember" resultType="com.zixue.shop.bean.Member">
+		select * from t_member
+		<where>
+			1=1
+			<if test="loginacct!=null and  loginacct!=''">
+			and loginacct=#{loginacct}
+			</if>
+			<if test="memberpswd!=null and memberpswd!=''">
+			and memberpswd=#{memberpswd}
+			</if>
+			<if test="nickname!=null and nickname!=''">
+			and nickname=#{nickname}
+			</if>
+			<if test="avatar!=null and avatar!=''">
+			and avatar=#{avatar}
+			</if>
+			<if test="loginstatus!=null and loginstatus!=''">
+			and loginstatus=#{loginstatus}
+			</if>
+			<if test="authstatus!=null and authstatus!=''">
+			and authstatus=#{authstatus}
+			</if>
+			<if test="sellerstatus!=null and sellerstatus!=''">
+			and sellerstatus=#{sellerstatus}
+			</if>
+			<if test="lockstatus!=null and lockstatus!=''">
+			and lockstatus=#{lockstatus}
+			</if>
+			<if test="regtime!=null and regtime!=''">
+			and regtime=#{regtime}
+			</if>
+			<if test="lastvisittime!=null and lastvisittime!=''">
+			and lastvisittime=#{lastvisittime}
+			</if>
+			<if test="email!=null and email!=''">
+			and email=#{email}
+			</if>
+			<if test="loginnum!=null and loginnum!=0 ">
+			and loginnum=#{loginnum}
+			</if>
+		
+		</where>
+	</select>
+	<!-- 注册 -->
+	<insert id="insertMember">
+	
+		insert into t_member
+		(loginacct,memberpswd,loginstatus,authstatus,sellerstatus,lockstatus,regtime,email,nickname,loginnum)
+	values(#{loginacct},#{memberpswd},'0','0','0','0',#{regtime},#{email},#{nickname},0)
+	</insert>
+	<!-- 修改登录之后状态 -->
+	<!--    loginacct;  memberpswd;  nickname; avatar;  loginstatus;  authstatus;  sellerstatus; lockstatus; regtime;  lastvisittime;  email; loginnum; -->
+	<update id="updateMember">
+		update t_member
+		 <trim prefix="set" prefixOverrides=","> 
+			<if test="loginacct!=null and  loginacct!=''">
+			,loginacct=#{loginacct}
+			</if>
+			<if test="memberpswd!=null and memberpswd!=''">
+			,memberpswd=#{memberpswd}
+			</if>
+			<if test="nickname!=null and nickname!=''">
+			,nickname=#{nickname}
+			</if>
+			<if test="avatar!=null and avatar!=''">
+			,avatar=#{avatar}
+			</if>
+			<if test="loginstatus!=null and loginstatus!=''">
+			,loginstatus=#{loginstatus}
+			</if>
+			<if test="authstatus!=null and authstatus!=''">
+			,authstatus=#{authstatus}
+			</if>
+			<if test="sellerstatus!=null and sellerstatus!=''">
+			,sellerstatus=#{sellerstatus}
+			</if>
+			<if test="lockstatus!=null and lockstatus!=''">
+			,lockstatus=#{lockstatus}
+			</if>
+			<if test="regtime!=null and regtime!=''">
+			,regtime=#{regtime}
+			</if>
+			<if test="lastvisittime!=null and lastvisittime!=''">
+			,lastvisittime=#{lastvisittime}
+			</if>
+			<if test="email!=null and email!=''">
+			,email=#{email}
+			</if>
+			<if test="loginnum!=null and loginnum!=0 ">
+			,loginnum=#{loginnum}
+			</if>
+		</trim>
+		
+		where id=#{id}
+	
+	</update>
+	
+	<!-- public void insertGoods(Goods goods);  -->
+	<insert id="insertGoods" useGeneratedKeys="true" keyProperty="id" >
+		insert into t_goods(
+		name,memberid,createtime,stock,price,iconpath,iconpath1,categoryid,remark
+		) 
+		values
+		(
+		#{name},#{memberid},#{createtime},#{stock},#{price},#{iconpath},#{iconpath1},#{categoryid},#{remark}
+		)
+	</insert>
+	<!-- public void insertSellerInfo(SellerInfo sellerInfo); -->
+		<insert id="insertSellerInfo" >
+			insert into t_seller_info (
+			memberid,introduce,remark,tel,cstel
+			)
+			values(
+			#{memberid},#{introduce},#{remark},#{tel},#{cstel}
+			)
+		
+		</insert>
+	<!-- public void insertGoodsTags(List<GoodsTag> goodsTags); -->
+		<insert id="insertGoodsTags" >
+			insert into t_goods_tag (
+			goodsid,tagid
+			)
+			values
+			<foreach collection="gts" item="gt" separator=",">
+			(#{gt.goodsid},#{gt.tagid})
+			
+			</foreach>
+			
+		</insert>
+	<!-- public void insertGoodsInfo(GoodsInfo goodsInfo); -->
+		<insert id="insertGoodsInfo" >
+			insert into t_goods_info (
+			goodsid
+			)values(
+			#{goodsid}
+			)
+		</insert>
+</mapper>
